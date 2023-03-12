@@ -43,7 +43,10 @@ public class JsonFileReadWrite {
 //        Spark.get("/get-users", JsonFileReadWrite::getUsers);
         Spark.get("/get-users", "application/json", (request, response) -> {
             return getUsers();
-        }, new JsonTransformer());
+        });
+//        Spark.get("/get-users", "application/json", (request, response) -> {
+//            return getUsers();
+//        }, new JsonTransformer());
 
         Spark.post("/post-user", "application/json", (request, response) -> {
             String name, email, id;
@@ -136,7 +139,8 @@ public class JsonFileReadWrite {
 //        Gson g = new Gson();
 //        return g.toJson(reader.toString());
 //        return reader.toString();
-        return data;
+//        return data;
+        return gson.toJson(data);
     }
 
     private static void resetUserList() {
