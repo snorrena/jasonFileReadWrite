@@ -5,6 +5,8 @@ import com.google.gson.reflect.TypeToken;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.event.Level;
 import spark.Filter;
 import spark.ResponseTransformer;
 import spark.Spark;
@@ -21,11 +23,14 @@ import java.util.List;
 import static spark.Spark.after;
 import static spark.Spark.threadPool;
 
+@Slf4j
 public class JsonFileReadWrite {
 
     static String output = "";
     static List<User> userList = new ArrayList<>();
     static Gson gson = new Gson();
+
+    public static final String USER_JSON_FILE = "users.json";
 
     public static void main(String[] args) {
 
@@ -40,123 +45,102 @@ public class JsonFileReadWrite {
             response.header("Access-Control-Allow-Methods", "POST");
         });
 
-//        Spark.get("/get-users", JsonFileReadWrite::getUsers);
         Spark.get("/get-users", "application/json", (request, response) -> {
             return getUsers();
         });
-//        Spark.get("/get-users", "application/json", (request, response) -> {
-//            return getUsers();
-//        }, new JsonTransformer());
 
         Spark.post("/post-user", "application/json", (request, response) -> {
-            String name, email, id;
-            id = request.queryParams("id");
-            name = request.queryParams("name");
-            email = request.queryParams("email");
-            System.out.printf("id: %s, name: %s, email: %s\n", id, name, email);
-            User user = new User();
-            user.setId(Integer.parseInt(id));
-            user.setName(name);
-            user.setEmail(email);
+
+            String jsonBody = request.body();
+            log.info("json body is {}", jsonBody);
+            User user = gson.fromJson(jsonBody, User.class);
+
             userList.add(user);
+
             writeUserListToFile();
-//            addUserToUserList(user);
-//            Gson g = new Gson();
+
             return gson.toJson(user);
         });
 
-        File tempFile = new File("users.json");
+        File tempFile = new File(USER_JSON_FILE);
         boolean exists = tempFile.exists();
 
 
-//        Gson gson = new Gson();
-
         if (!exists) {
             resetUserList();
-            System.out.println("user list size: " + userList.size());
-            System.out.println();
+            log.info("user list size: {} /n",userList.size());
 
             writeUserListToFile();
         }
 
-        System.out.println("Read the user.json file back into memory, convert to arraylist then output details in forEach loop");
+        log.info("Read the user.json file back into memory, convert to arraylist then output details in forEach loop");
 
         Reader reader = null;
 
         try {
-            reader = Files.newBufferedReader(Paths.get("users.json"));
+            reader = Files.newBufferedReader(Paths.get(USER_JSON_FILE));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn(Level.WARN.name(), "Error reading user.json file: {}", e.getMessage());
         }
 
         Type userListType = new TypeToken<ArrayList<User>>() {
         }.getType();
 
+        assert reader != null;
         userList = gson.fromJson(reader, userListType);
 
-//        List<User> users = new Gson().fromJson(reader, new TypeToken<List<User>>() {}.getType());
-
         for (User user : userList) {
-            System.out.printf("\tid: %d, name: %s, email: %s\n", user.getId(), user.getName(), user.getEmail());
+            log.info("user: {}", gson.toJson(user));
         }
 
     }
 
     private static void writeUserListToFile() {
         output = gson.toJson(userList);
-        System.out.println("userList after conversion to json with gson");
-        System.out.printf("\t%s\n\n", output);
+        log.info("userList after conversion to json with gson");
+        log.info("userList size: {} /n",userList.size());
 
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("users.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(USER_JSON_FILE));
             writer.write(output);
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn(Level.WARN.name(), "Error writing user list to file: {}", e.getMessage());
         }
-    }
-
-    private static void addUserToUserList(User user) {
-        userList.add(user);
     }
 
     private static String getUsers() {
-//        Reader reader = null;
-//
-//        try {
-//            reader = Files.newBufferedReader(Paths.get("users.json"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        Path fileName = Path.of("users.json");
+
+        Path fileName = Path.of(USER_JSON_FILE);
         String data = null;
+
         try {
             data = Files.readString(fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn(Level.WARN.name(), "Error reading user list from file: {}", e.getMessage());
         }
-        System.out.println(data);
-//        Gson g = new Gson();
-//        return g.toJson(reader.toString());
-//        return reader.toString();
-//        return data;
+
+        log.info("data: {}", data);
+
         return gson.toJson(data);
     }
 
     private static void resetUserList() {
+
         User user1 = new User(1, "Scott", "snorrena@gmail.com");
         User user2 = new User(2, "Tammy", "tamarajones123@gmail.com");
         User user3 = new User(3, "Creighton", "crey@hotmail.com");
         User user4 = new User(4, "Mystery", "mystery@yahoo.com");
         List<User> users = new ArrayList<>(Arrays.asList(user1, user2, user3, user4));
+
         userList.clear();
+
         userList.addAll(users);
+
     }
 }
 
 class JsonTransformer implements ResponseTransformer {
-
-//    private Gson gson = new Gson();
 
     @Override
     public String render(Object model) {

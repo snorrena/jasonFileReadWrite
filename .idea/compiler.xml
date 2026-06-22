@@ -10,8 +10,5 @@
         <module name="jsonFileReadWrite" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="jsonFileReadWrite" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>

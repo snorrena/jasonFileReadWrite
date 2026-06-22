@@ -1,0 +1,14 @@
+{
+  "name": "webApp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently --kill-others \"java -jar ../target/jsonFileReadWrite-1.0-SNAPSHOT-jar-with-dependencies.jar\" \"live-server --entry-file=index.html\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@11.8.0"
+}
