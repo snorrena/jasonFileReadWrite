@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.Level;
 import spark.Filter;
-import spark.ResponseTransformer;
 import spark.Spark;
 
 import java.io.*;
@@ -138,15 +137,6 @@ public class JsonFileReadWrite {
         userList.addAll(users);
 
     }
-}
-
-class JsonTransformer implements ResponseTransformer {
-
-    @Override
-    public String render(Object model) {
-        return JsonFileReadWrite.gson.toJson(model);
-    }
-
 }
 
 @Data
