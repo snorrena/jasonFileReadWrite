@@ -1,43 +1,48 @@
-what is this program
+jsonFileReadWrite is a programing exercise that demonstrates how to read and write json files in Java using the Gson library.
+The project also includes a simple web server built using Apache Spark that allows users to interact with the program through
+HTTP requests.
 
-this program starts a spark web server that exposed two end points to listen for get and pot requests.
-the app get request return a list of user data in json string format
-the post request, accepts jason data and adds a user to the database
+The main source code in this repository uses Maven to build a Java application into an executable jar file. Run of the Jar
+starts a Apache Spark web server that exposes two http method end points to listen for requests on the following urls.
 
-the app saves the user data list as a json file and writes it to a file
+http://localhost:4567/get-users
+http://localhost:4567/post-user
 
-on load the app start the spark server and exposes the rest end points
+The get request returns a list of users. The post request is used to add data for a new user.
 
-it checks for the existence of the user data json file in the root directory. If it does not exist, a new file is created and populated with seed data.
-the seed data file is converted to json string and written to a file
-the user data file is then read from the file and loaded into memory as a list of type user
+On first launch, the app will look for a local data file named "user.json" in the root context. If the file exists, the user 
+data is read into memory and logged out to console. If the file does not exist, the app will seed the program with a small set
+of user data and write a new "user.json" file to the program directory. The app will then wait for http requests to be received.
 
-features
-Spark web server
+If a http post request is received including new user data in the method body, the app will add the new user to the in memory
+user data list. The updated list is then saved back to the file system in the"user.json" file and the new list is console
+logged out to confirm completion of the update.
 
-static methods
-threadPool //sets min/max threads and timeout
-after //sets access controls and methods ie get, post
-spark.get
-spark.post
+The second part of this project is a html/Javascript application saved in the webApp folder. The Javascript loaded in a simple
+web page uses the fetch api to send get and post requests to the java application. The web app is the web browser interface that 
+allows a user to view the list of users and add new users to the list.
 
-User data class set using Lombok
+Program dependencies are managed using Maven. The following dependencies are used in this project:
+lombok library for data class generation
+Gson library for json read and write
+slf4j library for logging
+Node is used to run the web application in the webApp folder.
 
-gson is used to convert the user list array to json prior to read and write from a local file
-the gson.toJson method is used to convert the userList<User> for read and write to file
+The following node modules are used in the web application:
+concurrently for running the node application and the java application at the same time.
+live-server for running a simple web server to serve the web application.
 
-BufferedFileWriter is used to write the json file to file on local disk
-BufferedWriter writer = new BufferedWriter(new FileWriter("users.json"));
+Java 8 is used to run the Apache Spark server application. 
+Maven is used to build the project and manage dependencies. 
 
-Files.newBufferedReader is used to retrieve the json file
-reader = Files.newBufferedReader(Paths.get("users.json"));
+How to build and run the project:
 
-gson.toJson(read, userListType) is used to convert the json file back into an arrayList of type user
-the toJson method takes in the buffered reader and token types as parameters and returns the user array list
-the userListType is created as a type helper file used by gson to convert json back into the user array list
+The project is built using the command "mvn clean package" run in the program root directory. This command creates an executable 
+jar file in the target directory.
 
-Type userListType = new TypeToken<ArrayList<User>>() {
-}.getType();
-userList = gson.fromJson(reader, userListType);
+Navigate the webApp directory
+
+Run the command "npm run start" to start the Spark Server and open the index.html page in the default web browser
+with Live-Server. The web page will display a list of users and allow the user to add new users to the list.
 
 
