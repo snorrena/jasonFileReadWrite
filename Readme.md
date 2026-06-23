@@ -18,9 +18,17 @@ If a http post request is received including new user data in the method body, t
 user data list. The updated list is then saved back to the file system in the"user.json" file and the new list is console
 logged out to confirm completion of the update.
 
+Tip:
+Navigate to the target folder and run the command "java -jar jsonFileReadWrite-1.0-SNAPSHOT.jar" to start the Spark server.
+Postman can be used to test the get and post requests to the Spark server. The get request can be tested by sending a GET 
+request to http://localhost:4567/get-users. The post request can be tested by sending a POST request to 
+http://localhost:4567/post-user with a JSON body containing the new user data. 
+ex. {id:1, name:"John Doe", email:"john.doe@example.com"}
+
 The second part of this project is a html/Javascript application saved in the webApp folder. The Javascript loaded in a simple
 web page uses the fetch api to send get and post requests to the java application. The web app is the web browser interface that 
-allows a user to view the list of users and add new users to the list.
+allows a user to view the list of users and add new users to the list. See the readme file in the webApp folder for more information 
+on how to run the web application.
 
 Program dependencies are managed using Maven. The following dependencies are used in this project:
 lombok library for data class generation
@@ -32,8 +40,12 @@ The following node modules are used in the web application:
 concurrently for running the node application and the java application at the same time.
 live-server for running a simple web server to serve the web application.
 
+npm install live-server concurrently
+
 Java 8 is used to run the Apache Spark server application. 
 Maven is used to build the project and manage dependencies. 
+
+Use a package manager such as sdman or asdf to install Java 8 and Maven.
 
 How to build and run the project:
 
@@ -45,9 +57,4 @@ Navigate the webApp directory
 Run the command "npm run start" to start the Spark Server and open the index.html page in the default web browser
 with Live-Server. The web page will display a list of users and allow the user to add new users to the list.
 
-Tip:
-Navigate to the target folder and run the command "java -jar jsonFileReadWrite-1.0-SNAPSHOT.jar" to start the Spark server.
-Postman can be used to test the get and post requests to the Spark server. The get request can be tested by sending a GET 
-request to http://localhost:4567/get-users. The post request can be tested by sending a POST request to 
-http://localhost:4567/post-user with a JSON body containing the new user data. 
-ex. {id:1, name:"John Doe", email:"john.doe@example.com"}
+
