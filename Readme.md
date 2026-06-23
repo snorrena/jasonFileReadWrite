@@ -45,4 +45,9 @@ Navigate the webApp directory
 Run the command "npm run start" to start the Spark Server and open the index.html page in the default web browser
 with Live-Server. The web page will display a list of users and allow the user to add new users to the list.
 
-
+Tip:
+Navigate to the target folder and run the command "java -jar jsonFileReadWrite-1.0-SNAPSHOT.jar" to start the Spark server.
+Postman can be used to test the get and post requests to the Spark server. The get request can be tested by sending a GET 
+request to http://localhost:4567/get-users. The post request can be tested by sending a POST request to 
+http://localhost:4567/post-user with a JSON body containing the new user data. 
+ex. {id:1, name:"John Doe", email:"john.doe@example.com"}
