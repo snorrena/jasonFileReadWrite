@@ -86,14 +86,16 @@
 						<configuration>
 							<target>
 							<!--the executable and web app script should be changed for mac/linux as follows-->
-							<!-- <exec executable="zsh"-->
-							<!-- remove <arg value='/c' />-->
-							<!-- <arg value='run_web_app.sh' /> -->
 								<exec executable="cmd.exe"
 									dir="${project.basedir}">
 									<arg value="/c" />
 									<arg value="run_web_app.bat" />
 								</exec>
+                                <!--
+                                 <exec executable="/bin/zsh">
+								 <arg value="run_web_app.sh" />
+								 </exec>
+                                 -->
 							</target>
 						</configuration>
 					</execution>

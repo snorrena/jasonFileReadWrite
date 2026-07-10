@@ -1,2 +1,3 @@
-#!/bin/bash
-cd webApp && pnpm run start
+#!/bin/zsh
+cd webApp
+pnpm run start
