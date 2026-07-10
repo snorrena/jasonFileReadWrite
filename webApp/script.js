@@ -17,7 +17,7 @@
             const jsonString = JSON.stringify(jsonObject);
 
             //use the fetch method to post the form data and send to the java spark api
-            fetch("http://localhost:4567/post-user", {
+            fetch("http://127.0.0.1:4567/post-user", {
                 method: "post", body: jsonString,
             }).then((response) => {
                 console.log(response);
@@ -46,7 +46,7 @@
 
     //get request to fetch a list of users from the java spark api
     async function loadUserData() {
-        await fetch("http://localhost:4567/get-users") //fetch returns a promise
+        await fetch("http://127.0.0.1:4567/get-users") //fetch returns a promise
             .then((res) => {
                 if (res.ok) {
                     console.log("fetch successful");
