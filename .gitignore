@@ -31,3 +31,8 @@ target/
 .settings/
 bin/
 **/users.json
+
+# LiteLLM
+start_litellm.bat
+litellm_config.yaml
+litellm-venv/
