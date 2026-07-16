@@ -61,10 +61,14 @@
 
     function printDataToDom(data) {
         console.log(data);
-        let userArray = JSON.parse(data);
-        let id_input = document.getElementById("id");
+        //let userArray = JSON.parse(data);
+        let userArray = data;
+
+        const id_input = document.getElementById("id");
+
         //get the max id value to pre-populate the next value increment. the reduce method return the user with the highest id value
-        const max = userArray.reduce((prev, current) => prev.id > current.id ? prev : current);
+        let max;
+        max = userArray.reduce((prev, current) => prev.id > current.id ? prev : current);
         //set the id input value to the next value
         id_input.value = max.id + 1;
 

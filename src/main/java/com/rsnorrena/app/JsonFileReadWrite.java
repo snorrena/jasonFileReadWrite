@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.event.Level;
 import spark.Filter;
 import spark.Spark;
 
@@ -17,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static spark.Spark.after;
@@ -25,8 +25,7 @@ import static spark.Spark.threadPool;
 @Slf4j
 public class JsonFileReadWrite {
 
-    static String output = "";
-    static List<User> userList = new ArrayList<>();
+    static List<User> userList = Collections.synchronizedList(new ArrayList<>());
     static Gson gson = new Gson();
 
     public static final String USER_JSON_FILE = "users.json";
@@ -40,13 +39,10 @@ public class JsonFileReadWrite {
 
         after((Filter) (request, response) -> {
             response.header("Access-Control-Allow-Origin", "*");
-            response.header("Access-Control-Allow-Methods", "GET");
-            response.header("Access-Control-Allow-Methods", "POST");
+            response.header("Access-Control-Allow-Methods", "GET, POST");
         });
 
-        Spark.get("/get-users", "application/json", (request, response) -> {
-            return getUsers();
-        });
+        Spark.get("/get-users", "application/json", (request, response) -> getUsers());
 
         Spark.post("/post-user", "application/json", (request, response) -> {
 
@@ -54,9 +50,10 @@ public class JsonFileReadWrite {
             log.info("json body is {}", jsonBody);
             User user = gson.fromJson(jsonBody, User.class);
 
-            userList.add(user);
-
-            writeUserListToFile();
+            synchronized (userList) {
+                userList.add(user);
+                writeUserListToFile();
+            }
 
             return gson.toJson(user);
         });
@@ -64,29 +61,25 @@ public class JsonFileReadWrite {
         File tempFile = new File(USER_JSON_FILE);
         boolean exists = tempFile.exists();
 
-
         if (!exists) {
             resetUserList();
-            log.info("user list size: {} /n",userList.size());
+            log.info("user list size: {} /n", userList.size());
 
             writeUserListToFile();
         }
 
         log.info("Read the user.json file back into memory, convert to arraylist then output details in forEach loop");
 
-        Reader reader = null;
-
-        try {
-            reader = Files.newBufferedReader(Paths.get(USER_JSON_FILE));
-        } catch (IOException e) {
-            log.warn(Level.WARN.name(), "Error reading user.json file: {}", e.getMessage());
-        }
-
         Type userListType = new TypeToken<ArrayList<User>>() {
         }.getType();
 
-        assert reader != null;
-        userList = gson.fromJson(reader, userListType);
+        try (Reader reader = Files.newBufferedReader(Paths.get(USER_JSON_FILE))) {
+            List<User> loaded = gson.fromJson(reader, userListType);
+            userList = Collections.synchronizedList(loaded != null ? loaded : new ArrayList<>());
+        } catch (IOException e) {
+            log.warn("Error reading user.json file: {}", e.getMessage());
+            userList = Collections.synchronizedList(new ArrayList<>());
+        }
 
         for (User user : userList) {
             log.info("user: {}", gson.toJson(user));
@@ -95,33 +88,31 @@ public class JsonFileReadWrite {
     }
 
     private static void writeUserListToFile() {
-        output = gson.toJson(userList);
+        String output = gson.toJson(userList);
         log.info("userList after conversion to json with gson");
-        log.info("userList size: {} /n",userList.size());
+        log.info("userList size: {} /n", userList.size());
 
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(USER_JSON_FILE));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_JSON_FILE))) {
             writer.write(output);
-            writer.close();
         } catch (IOException e) {
-            log.warn(Level.WARN.name(), "Error writing user list to file: {}", e.getMessage());
+            log.warn("Error writing user list to file: {}", e.getMessage());
         }
     }
 
     private static String getUsers() {
 
         Path fileName = Path.of(USER_JSON_FILE);
-        String data = null;
+        String data = "[]";
 
         try {
             data = Files.readString(fileName);
         } catch (IOException e) {
-            log.warn(Level.WARN.name(), "Error reading user list from file: {}", e.getMessage());
+            log.warn("Error reading user list from file: {}", e.getMessage());
         }
 
         log.info("data: {}", data);
 
-        return gson.toJson(data);
+        return data;
     }
 
     private static void resetUserList() {
