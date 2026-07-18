@@ -33,6 +33,8 @@ bin/
 **/users.json
 
 # LiteLLM
-start_litellm.bat
-litellm_config.yaml
+start_docker_litellm.ps1
+config.yaml
 litellm-venv/
+
+*.iml
