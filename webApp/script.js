@@ -1,3 +1,7 @@
+/**
+ * For more details on the script.js file, see the
+ * [code details](https://github.com/snorrena/jasonFileReadWrite/tree/main/webApp/code-detail/script.js.md)
+ */
 (function () {
     document.getElementById("submit_button").addEventListener("click", postFormData);
     document.getElementById("form1").addEventListener('keydown', function (event) {
