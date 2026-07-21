@@ -1,3 +1,8 @@
+/**
+ * <p>
+ * Code detail: {@linkplain <a href="https://github.com/snorrena/jasonFileReadWrite/tree/main/code-detail/jsonFileReadWrite.java.md"></a>}.
+ * </p>
+ */
 package com.rsnorrena.app;
 
 import com.google.gson.Gson;
