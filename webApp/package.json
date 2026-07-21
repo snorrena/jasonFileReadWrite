@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently --kill-others \"java -jar ../target/jsonFileReadWrite-1.0-SNAPSHOT-jar-with-dependencies.jar\" \"live-server --entry-file=index.html\""
+    "checkdeps": "node -e \"const { execSync } = require('child_process'); let out; try { out = execSync('pnpm ls -g --depth=0', { encoding: 'utf8' }); } catch (e) { out = (e.stdout || '') + (e.stderr || ''); } const missing = ['concurrently', 'live-server'].filter(p => !out.includes(p + '@')); if (missing.length) { console.error('Missing required global pnpm module(s): ' + missing.join(', ')); process.exit(1); }\"",
+    "start": "npm run checkdeps && concurrently --kill-others \"java -jar ../target/jsonFileReadWrite-1.0-SNAPSHOT-jar-with-dependencies.jar\" \"live-server --entry-file=index.html\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@11.8.0"
+  "packageManager": "pnpm@11.15.1"
 }
