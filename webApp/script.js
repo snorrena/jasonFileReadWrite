@@ -3,6 +3,17 @@
  * [code details](https://github.com/snorrena/jasonFileReadWrite/tree/main/webApp/code-detail/script.js.md)
  */
 (function () {
+    const errorMessage = document.getElementById("error_message");
+    const nameInput = document.getElementById("name_input");
+    const emailInput = document.getElementById("email_input");
+
+    // Hide the error message when the user starts typing in either input field
+    nameInput.addEventListener("input", () => {
+        errorMessage.style.display = "none";
+    });
+    emailInput.addEventListener("input", () => {
+        errorMessage.style.display = "none";
+    });
     document.getElementById("submit_button").addEventListener("click", postFormData);
     document.getElementById("form1").addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
@@ -32,7 +43,10 @@
                 //load a new list of users for display in the dom
                 loadUserData().then(r => console.log("user data loaded after post"));
             });
+        }else{
+            errorMessage.style.display = "block";
         }
+        
     }
 
     //validates the form data based on existing input values

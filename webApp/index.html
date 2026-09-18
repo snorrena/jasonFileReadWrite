@@ -1802,26 +1802,33 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
       rel="icon"
       type="image/x-icon"
     />
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
 
     <title>Document</title>
     <script defer src="./script.js"></script>
   </head>
 
   <body>
-  <div id="user_form">
-    <h1>Add User</h1>
-    <form id="form1">
-      <label for="id">id:</label><input type="text" id="id" name="id" readonly />
-        <label for="name_input">Name:</label><input type="text" id="name_input" name="name" required/>
-        <label for="email_input">Email:</label><input type="email" id="email_input" name="email" required /><br />
-    </form>
+    <div id="user_form">
+      <h1>Add User</h1>
+      <form id="form1">
+        <label for="id">id:</label
+        ><input type="text" id="id" name="id" readonly />
+        <label for="name_input">Name:</label
+        ><input type="text" id="name_input" name="name" required />
+        <label for="email_input">Email:</label
+        ><input type="email" id="email_input" name="email" required /><br />
+      </form>
+      <div id="error_message" style="color: red; margin-top: 10px; display: none;">
+        Error! Enter a name and email address.
+      </div>
+      <br />
+      <button id="submit_button">Submit</button>
+    </div>
     <br />
-    <button id="submit_button">Submit</button>
-  </div>
-  <br />
-  <h1>User List</h1>
-  <div>
-    <ul id="user_data_ul"></ul>
-  </div>
+    <h1>User List</h1>
+    <div>
+      <ul id="user_data_ul"></ul>
+    </div>
   </body>
 </html>
